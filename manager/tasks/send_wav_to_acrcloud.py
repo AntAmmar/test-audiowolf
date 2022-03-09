@@ -53,9 +53,18 @@ class SendWavToAcrCloudTask(BaseTask):
         response = requests.post(requrl, files=files, data=data)
         songs = response.json().get('metadata').get('music')
         for song in songs:
-            spotify_id = song.get('external_metadata').get('spotify').get('track').get('id')
-            kwargs['track_id'] = spotify_id
-            kwargs['youtube_id'] = song.get('external_metadata').get('youtube').get('vid')
+            external_metadata = song.get('external_metadata')
+            if external_metadata:
+                spotify = external_metadata.get('spotify')
+                if spotify:
+                    track = spotify.get('track')
+                    if track:
+                        track_id = track.get('id')
+                        kwargs['track_id'] = track_id
+                youtube = external_metadata.get('youtube')
+                if youtube:
+                    youtube_id = youtube.get('vid')
+                    kwargs['youtube_id'] = youtube_id
             SpotifyGetTracksTask.delay(**kwargs)
         AdvertVideoStatus.objects.get(advert_id=advert_id).update_send_acr_cloud(Status.SUCCESS)
         return response.json()
