@@ -38,7 +38,7 @@ class DownloadVideos:
                 print(exc)
                 continue
             brand, created = Brand.objects.get_or_create(name=brand_name)
-            with open(os.path.join(BASE_DIR, "media", "downloaded", video_filename)) as video_file:
+            with open(os.path.join(BASE_DIR, "media", "downloaded", video_filename), 'rb') as video_file:
                 advert = AdvertVideo(brand=brand)
                 advert.video.save(video_filename, File(video_file))
                 advert.save()
