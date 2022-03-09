@@ -29,6 +29,8 @@ setup(
         'requests',
         'django-storages',
         'pyacrcloud @ git+https://github.com/acrcloud/acrcloud_sdk_python',
-        'ffmpeg-python==0.2.0'
+        'ffmpeg-python==0.2.0',
+        'openpyxl==3.0.9',
+        'pytube==12.0.0',
     ],
 )

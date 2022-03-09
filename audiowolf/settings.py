@@ -80,9 +80,17 @@ WSGI_APPLICATION = 'audiowolf.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'audiowolf',
+        'USER': 'audiowolf',
+        'PASSWORD': 'audiowolf',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
 
@@ -158,4 +166,4 @@ CACHES = {
 AUDIO_SPLIT_DURATION = '10'
 MUSIIO_API_KEY = '62ce3511ffcd42a09a6fa866023920dccKGOJ-TSQQbGhAawCRxjgAZbIM_EyY'
 
-SPREADSHEET_FILE = ''
+SPREADSHEET_FILE = '/root/Confidential_Henry Parsley_Task _Consolidated_ Final Verified.ANTCOLONY.xlsx'

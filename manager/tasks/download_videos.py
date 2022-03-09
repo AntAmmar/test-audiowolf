@@ -1,6 +1,8 @@
 import os
 
 import openpyxl
+from django.core.files import File
+
 from audiowolf.settings import BASE_DIR, SPREADSHEET_FILE
 
 from adverts.models import AdvertVideo, Brand
@@ -36,5 +38,7 @@ class DownloadVideos:
                 print(exc)
                 continue
             brand, created = Brand.objects.get_or_create(name=brand_name)
-            advert = AdvertVideo(brand=brand, video=os.path.join(BASE_DIR, "media", "downloaded", video_filename))
-            advert.save()
+            with open(os.path.join(BASE_DIR, "media", "downloaded", video_filename)) as video_file:
+                advert = AdvertVideo(brand=brand)
+                advert.video.save(video_filename, File(video_file))
+                advert.save()
