@@ -1,0 +1,35 @@
+version: '3.6'
+
+services:
+#  rabbitmq:
+#    image: "rabbitmq"
+#    ports:
+#      - "5672:5672"
+  audiowolf:
+    build: .
+    image: audiowolf
+    command: |
+      python3 /app/manage.py runserver 0.0.0.0:8000
+    volumes:
+     - .:/app
+    ports:
+      - 8000:8000
+  worker:
+    build: .
+    command: |
+      celery -A audiowolf worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
+#  beat:
+#    build: .
+#    command: \
+#      celery -A audiowolf beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+#    volumes:
+#      - .:/app
+#    depends_on:
+#      - audiowolf
+
+volumes:
+  postgres_data:

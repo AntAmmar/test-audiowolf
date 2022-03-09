@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <title>{{ brand.name }} adverts - Audiowolf</title>
+    <style>
+        .button {
+            display: block;
+            width: 115px;
+            background: #db2777;
+            margin-left: 2em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            line-height: 25px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body style="box-sizing: border-box; background: #f9fafb">
+<div style="width: 1000px; margin: auto;">
+    <h1>{{ brand.name }}'s adverts in pipeline</h1>
+    <form method="post" action="{% url 'brand-adverts' brand.id %}" enctype="multipart/form-data">
+					{% csrf_token %}
+        <input type="hidden" name="brand" value="{{ brand.id }}">
+        <div style="display: flex; padding: 2em">
+            <input type="file" name="video" autocomplete="off" required>
+            <input type="submit" class="button" value="Upload">
+        </div>
+    </form>
+    <div style="display: flex; padding: 2em;">
+        <table style="width: 100%; border-collapse: collapse; margin: 1em 0;">
+            <thead>
+            <tr>
+                <th style="border: 1px solid #fff;padding: .5em 1em; background: #db2777; color: #fff">
+                    Video name
+                </th>
+                <th style="border: 1px solid #fff;padding: .5em 1em; background: #db2777; color: #fff">
+                    Status
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for advert in brand.advertvideo_set.all %}
+                <tr>
+                    <td data-title='Video name' style="border: 1px solid #B3BFAA; padding: .5em 1em;">
+                        <a href="{% url 'advert-pipeline' advert.id %}">
+                            {{ advert.video }}
+                        </a>
+                    </td>
+                    <td data-title='Status' style="border: 1px solid #B3BFAA; padding: .5em 1em;">
+                        {{ advert.get_last_step }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
