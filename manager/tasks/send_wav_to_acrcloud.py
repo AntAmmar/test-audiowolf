@@ -65,7 +65,7 @@ class SendWavToAcrCloudTask(BaseTask):
                 if youtube:
                     youtube_id = youtube.get('vid')
                     kwargs['youtube_id'] = youtube_id
-            SpotifyGetTracksTask.delay(**kwargs)
+                SpotifyGetTracksTask.delay(**kwargs)
         AdvertVideoStatus.objects.get(advert_id=advert_id).update_send_acr_cloud(Status.SUCCESS)
         return response.json()
 

@@ -1,4 +1,6 @@
 import os
+from time import sleep
+from urllib.error import HTTPError
 
 import openpyxl
 from django.core.files import File
@@ -26,18 +28,26 @@ class DownloadVideos:
                 yield official_yt_link, name, brand
                 continue
 
+    def download(self, link):
+        youtube: YouTube = YouTube(link)
+        try:
+            video = youtube.streams.get_highest_resolution()
+            video.download(os.path.join(BASE_DIR, "media", "downloaded"))
+            video_filename = video.default_filename
+            return video_filename
+        except HTTPError:
+            sleep(60)
+            return self.download(link)
+        except Exception as exc:
+            print(exc)
+            return
+
     def download_video(self):
         links = self.read_spreadsheet()
         for link, name, brand_name in links:
-            youtube: YouTube = YouTube(link)
-            try:
-                video = youtube.streams.get_highest_resolution()
-                video.download(os.path.join(BASE_DIR, "media", "downloaded"))
-                video_filename = video.default_filename
-            except Exception as exc:
-                print(exc)
-                continue
-            brand, created = Brand.objects.get_or_create(name=brand_name)
-            with open(os.path.join(BASE_DIR, "media", "downloaded", video_filename), 'rb') as video_file:
-                advert = AdvertVideo(brand=brand)
-                advert.video.save(video_filename, File(video_file))
+            video_filename = self.download(link)
+            if video_filename:
+                brand, created = Brand.objects.get_or_create(name=brand_name)
+                with open(os.path.join(BASE_DIR, "media", "downloaded", video_filename), 'rb') as video_file:
+                    advert = AdvertVideo(brand=brand)
+                    advert.video.save(video_filename, File(video_file))
