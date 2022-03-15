@@ -1,4 +1,8 @@
+import time
+from json import JSONDecodeError
+
 import requests
+
 from adverts.models import Status, AdvertVideoStatus
 
 from audiowolf.celery import app
@@ -15,6 +19,31 @@ class ChartmetricTask(BaseTask):
     name = 'chartmetric_task'
     callback = None
 
+    def read_responses(self, advert_id, spotify_artist_url, headers):
+        retry_counter = 0
+        try:
+            get_artist = requests.get(CHARTMETRIC_SEARCH_URL, params={'q': spotify_artist_url}, headers=headers)
+            artist_id = get_artist.json().get('obj').get('artists')[0].get('id')
+
+            artist_cpp = requests.get(BASE_URL + '/artist/' + str(artist_id) + '/cpp',
+                                      params={'stat': 'score'},
+                                      headers=headers)
+            cpp = artist_cpp.json()
+            AUDIENCE_URL = BASE_URL + '/artist/' + str(artist_id) + '/instagram-audience-stats'
+            audience_data = requests.get(AUDIENCE_URL, headers=headers)
+            audience = audience_data.json()
+            AdvertVideoStatus.objects.get(advert_id=advert_id).update_chartmetric(Status.SUCCESS)
+            return {
+                'cpp': cpp,
+                'audience': audience
+            }
+        except JSONDecodeError:
+            if retry_counter > 3:
+                raise JSONDecodeError
+            time.sleep(60)
+            self.read_responses(advert_id, spotify_artist_url, headers)
+            retry_counter += 1
+
     def execute(self, *args, **kwargs):
         advert_id = kwargs.get('id')
         spotify_artist_url = kwargs.get('spotify_artist_url')
@@ -29,20 +58,7 @@ class ChartmetricTask(BaseTask):
         headers = {
             'Authorization': 'Bearer {token}'.format(token=access_token)
         }
-
-        get_artist = requests.get(CHARTMETRIC_SEARCH_URL, params={'q': spotify_artist_url}, headers=headers)
-        artist_id = get_artist.json().get('obj').get('artists')[0].get('id')
-
-        artist_cpp = requests.get(BASE_URL + '/artist/' + str(artist_id) + '/cpp',
-                                  params={'stat': 'score'},
-                                  headers=headers)
-        AUDIENCE_URL = BASE_URL + '/artist/' + str(artist_id) + '/instagram-audience-stats'
-        audience_data = requests.get(AUDIENCE_URL, headers=headers)
-        AdvertVideoStatus.objects.get(advert_id=advert_id).update_chartmetric(Status.SUCCESS)
-        return {
-            'cpp': artist_cpp.json(),
-            'audience': audience_data.json()
-        }
+        self.read_responses(advert_id, spotify_artist_url, headers)
 
 
 ChartmetricTask = app.register_task(ChartmetricTask())

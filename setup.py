@@ -32,5 +32,9 @@ setup(
         'ffmpeg-python==0.2.0',
         'openpyxl==3.0.9',
         'pytube==12.0.0',
+        'selenium==4.1.0',
+        'webdriver-manager==3.5.2',
+        'torch==1.11.0',
+        'torchlibrosa==0.0.9',
     ],
 )

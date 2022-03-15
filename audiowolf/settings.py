@@ -167,3 +167,5 @@ AUDIO_SPLIT_DURATION = '10'
 MUSIIO_API_KEY = '62ce3511ffcd42a09a6fa866023920dccKGOJ-TSQQbGhAawCRxjgAZbIM_EyY'
 
 SPREADSHEET_FILE = '/root/all-adverts.xlsx'
+
+YT2MATE_URL = 'https://y2mate.is/en74/'

@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     'BaseTask', 'DispatchTask', 'UploadVideoTask', 'ConvertAudioToWavTask', 'SplitAudioFilesTask',
-    'SendWavToAcrCloudTask', 'SpotifyGetTracksTask', 'MusiioTask', 'ChartmetricTask',
+    'SendWavToAcrCloudTask', 'SpotifyGetTracksTask', 'MusiioTask', 'ChartmetricTask', 'NeuralNetworkTask',
 ]
 
 
@@ -74,3 +74,4 @@ from .send_wav_to_acrcloud import SendWavToAcrCloudTask # noqa
 from .spotify_get_tracks import SpotifyGetTracksTask # noqa
 from .musiio import MusiioTask # noqa
 from .chartmetric import ChartmetricTask # noqa
+from .neural_network import NeuralNetworkTask # noqa
