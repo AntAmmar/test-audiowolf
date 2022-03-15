@@ -1,4 +1,4 @@
-# import librosa
+import librosa
 import numpy
 from audiowolf.celery import app
 
@@ -59,26 +59,25 @@ class NeuralNetworkTask(BaseTask):
     def execute(self, *args, **kwargs):
         """Example of using panns_inferece for audio tagging and sound evetn detection.
         """
-        pass
-        # device = 'cpu'  # 'cuda' | 'cpu'
-        # audio_path = 'resources/R9_ZSCveAHg_7s.wav'
-        # (audio, _) = librosa.core.load(audio_path, sr=32000, mono=True)
-        # audio = audio[None, :]  # (batch_size, segment_samples)
-        #
-        # print('------ Audio tagging ------')
-        # at = AudioTagging(checkpoint_path=None, device=device)
-        # (clipwise_output, embedding) = at.inference(audio)
-        # """clipwise_output: (batch_size, classes_num), embedding: (batch_size, embedding_size)"""
-        #
-        # for i in range(len(clipwise_output)):
-        #     self.print_audio_tagging_result(clipwise_output[i], i)
-        # print(embedding, 'e')
-        # print(len(clipwise_output), 'coutputlen')
-        # print('------ Sound event detection ------')
-        # sed = SoundEventDetection(checkpoint_path=None, device=device)
-        # framewise_output = sed.inference(audio)
-        # """(batch_size, time_steps, classes_num)"""
-        # return self.plot_sound_event_detection_result(framewise_output[0])
+        device = 'cpu'  # 'cuda' | 'cpu'
+        audio_path = 'resources/R9_ZSCveAHg_7s.wav'
+        (audio, _) = librosa.core.load(audio_path, sr=32000, mono=True)
+        audio = audio[None, :]  # (batch_size, segment_samples)
+
+        print('------ Audio tagging ------')
+        at = AudioTagging(checkpoint_path=None, device=device)
+        (clipwise_output, embedding) = at.inference(audio)
+        """clipwise_output: (batch_size, classes_num), embedding: (batch_size, embedding_size)"""
+
+        for i in range(len(clipwise_output)):
+            self.print_audio_tagging_result(clipwise_output[i], i)
+        print(embedding, 'e')
+        print(len(clipwise_output), 'coutputlen')
+        print('------ Sound event detection ------')
+        sed = SoundEventDetection(checkpoint_path=None, device=device)
+        framewise_output = sed.inference(audio)
+        """(batch_size, time_steps, classes_num)"""
+        return self.plot_sound_event_detection_result(framewise_output[0])
 
 
 NeuralNetworkTask = app.register_task(NeuralNetworkTask())
