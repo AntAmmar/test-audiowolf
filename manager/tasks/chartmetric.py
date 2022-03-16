@@ -1,6 +1,3 @@
-import time
-from json import JSONDecodeError
-
 import requests
 
 from adverts.models import Status, AdvertVideoStatus
@@ -20,21 +17,17 @@ class ChartmetricTask(BaseTask):
     callback = None
 
     def read_responses(self, advert_id, spotify_artist_url, headers):
-        try:
-            get_artist = requests.get(CHARTMETRIC_SEARCH_URL, params={'q': spotify_artist_url}, headers=headers)
-            artist_id = get_artist.json().get('obj').get('artists')[0].get('id')
+        get_artist = requests.get(CHARTMETRIC_SEARCH_URL, params={'q': spotify_artist_url}, headers=headers)
+        artist_id = get_artist.json().get('obj').get('artists')[0].get('id')
 
-            artist_cpp = requests.get(BASE_URL + '/artist/' + str(artist_id) + '/cpp',
-                                      params={'stat': 'score'},
-                                      headers=headers)
-            cpp = artist_cpp.json()
-            AUDIENCE_URL = BASE_URL + '/artist/' + str(artist_id) + '/instagram-audience-stats'
-            audience_data = requests.get(AUDIENCE_URL, headers=headers)
-            audience = audience_data.json()
-            AdvertVideoStatus.objects.get(advert_id=advert_id).update_chartmetric(Status.SUCCESS)
-        except JSONDecodeError:
-            time.sleep(60)
-            self.read_responses(advert_id, spotify_artist_url, headers)
+        artist_cpp = requests.get(BASE_URL + '/artist/' + str(artist_id) + '/cpp',
+                                  params={'stat': 'score'},
+                                  headers=headers)
+        cpp = artist_cpp.json()
+        AUDIENCE_URL = BASE_URL + '/artist/' + str(artist_id) + '/instagram-audience-stats'
+        audience_data = requests.get(AUDIENCE_URL, headers=headers)
+        audience = audience_data.json()
+        AdvertVideoStatus.objects.get(advert_id=advert_id).update_chartmetric(Status.SUCCESS)
         return {
             'cpp': cpp,
             'audience': audience
