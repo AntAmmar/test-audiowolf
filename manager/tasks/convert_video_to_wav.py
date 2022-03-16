@@ -4,7 +4,7 @@ import subprocess
 from audiowolf.settings import MEDIA_ROOT
 
 from adverts.models import AdvertVideoStatus, Status
-from manager.tasks.split_audio_files import SplitAudioFilesTask
+from manager.tasks.neural_network import NeuralNetworkTask
 from audiowolf.celery import app
 
 from manager.tasks import BaseTask
@@ -31,7 +31,7 @@ class ConvertAudioToWavTask(BaseTask):
         if not os.path.isfile(outpath):
             subprocess.call(["ffmpeg", "-i", path, outpath])
             kwargs['path'] = outpath
-            SplitAudioFilesTask.delay(**kwargs)
+            NeuralNetworkTask.delay(**kwargs)
             AdvertVideoStatus.objects.get(advert_id=advert_id).update_convert_video_to_wav_status(Status.SUCCESS)
             return outpath
         else:

@@ -1,8 +1,13 @@
+from typing import Optional, List
+
 import librosa
 import numpy
+from adverts.models import AdvertVideoStatus, Status
+
 from audiowolf.celery import app
 
 from manager.tasks import BaseTask
+from manager.tasks.split_audio_files import SplitAudioFilesTask
 
 from panns_inference import AudioTagging, SoundEventDetection, labels
 
@@ -57,10 +62,12 @@ class NeuralNetworkTask(BaseTask):
                     return None
 
     def execute(self, *args, **kwargs):
-        """Example of using panns_inferece for audio tagging and sound evetn detection.
+        """Example of using panns_inferece for audio tagging and sound event detection.
         """
+        advert_id = kwargs.get('id')
+        AdvertVideoStatus.objects.get(advert_id=advert_id).update_neural_network_status(Status.IN_PROGRESS)
         device = 'cpu'  # 'cuda' | 'cpu'
-        audio_path = 'resources/R9_ZSCveAHg_7s.wav'
+        audio_path = kwargs.get('path')
         (audio, _) = librosa.core.load(audio_path, sr=32000, mono=True)
         audio = audio[None, :]  # (batch_size, segment_samples)
 
@@ -77,7 +84,11 @@ class NeuralNetworkTask(BaseTask):
         sed = SoundEventDetection(checkpoint_path=None, device=device)
         framewise_output = sed.inference(audio)
         """(batch_size, time_steps, classes_num)"""
-        return self.plot_sound_event_detection_result(framewise_output[0])
+        ranges: Optional[List[List[int]]] = self.plot_sound_event_detection_result(framewise_output[0])
+        kwargs['split_ranges'] = ranges
+        AdvertVideoStatus.objects.get(advert_id=advert_id).update_neural_network_status(Status.SUCCESS)
+        SplitAudioFilesTask.delay(**kwargs)
+        return ranges
 
 
 NeuralNetworkTask = app.register_task(NeuralNetworkTask())

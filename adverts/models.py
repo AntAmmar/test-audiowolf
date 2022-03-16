@@ -44,6 +44,7 @@ class AdvertVideoStatus(models.Model):
     advert = models.OneToOneField(AdvertVideo, on_delete=models.DO_NOTHING)
     upload_video = models.CharField(choices=Status.choices, default=Status.NOT_STARTED, max_length=100, blank=False, null=False)
     convert_video_to_wav = models.CharField(choices=Status.choices, default=Status.NOT_STARTED, max_length=100, blank=False, null=False)
+    neural_network = models.CharField(choices=Status.choices, default=Status.NOT_STARTED, max_length=100, blank=False, null=False)
     split_audio_files = models.CharField(choices=Status.choices, default=Status.NOT_STARTED, max_length=100, blank=False, null=False)
     send_acr_cloud = models.CharField(choices=Status.choices, default=Status.NOT_STARTED, max_length=100, blank=False, null=False)
     spotify_get_tracks = models.CharField(choices=Status.choices, default=Status.NOT_STARTED, max_length=100, blank=False, null=False)
@@ -59,6 +60,10 @@ class AdvertVideoStatus(models.Model):
 
     def update_convert_video_to_wav_status(self, status: Status):
         self.convert_video_to_wav = status
+        self.save()
+
+    def update_neural_network_status(self, status: Status):
+        self.neural_network = status
         self.save()
 
     def update_split_audio_files_status(self, status: Status):
