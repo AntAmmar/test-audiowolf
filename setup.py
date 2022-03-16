@@ -36,5 +36,6 @@ setup(
         'webdriver-manager==3.5.2',
         'torch==1.11.0',
         'torchlibrosa==0.0.9',
+        'numpy==1.21',
     ],
 )

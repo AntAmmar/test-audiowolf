@@ -20,7 +20,6 @@ class ChartmetricTask(BaseTask):
     callback = None
 
     def read_responses(self, advert_id, spotify_artist_url, headers):
-        retry_counter = 0
         try:
             get_artist = requests.get(CHARTMETRIC_SEARCH_URL, params={'q': spotify_artist_url}, headers=headers)
             artist_id = get_artist.json().get('obj').get('artists')[0].get('id')
@@ -33,16 +32,13 @@ class ChartmetricTask(BaseTask):
             audience_data = requests.get(AUDIENCE_URL, headers=headers)
             audience = audience_data.json()
             AdvertVideoStatus.objects.get(advert_id=advert_id).update_chartmetric(Status.SUCCESS)
-            return {
-                'cpp': cpp,
-                'audience': audience
-            }
         except JSONDecodeError:
-            if retry_counter > 3:
-                raise JSONDecodeError
             time.sleep(60)
             self.read_responses(advert_id, spotify_artist_url, headers)
-            retry_counter += 1
+        return {
+            'cpp': cpp,
+            'audience': audience
+        }
 
     def execute(self, *args, **kwargs):
         advert_id = kwargs.get('id')
