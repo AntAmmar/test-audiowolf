@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-# import librosa
+import librosa
 import numpy
 from adverts.models import AdvertVideoStatus, Status
 
@@ -67,8 +67,7 @@ class NeuralNetworkTask(BaseTask):
         AdvertVideoStatus.objects.get(advert_id=advert_id).update_neural_network_status(Status.IN_PROGRESS)
         device = 'cpu'  # 'cuda' | 'cpu'
         audio_path = kwargs.get('path')
-        # (audio, _) = librosa.core.load(audio_path, sr=32000, mono=True)
-        (audio, _) = 'a'
+        (audio, _) = librosa.core.load(audio_path, sr=32000, mono=True)
         audio = audio[None, :]  # (batch_size, segment_samples)
 
         at = AudioTagging(checkpoint_path=None, device=device)
