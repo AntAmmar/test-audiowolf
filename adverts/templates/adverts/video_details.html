@@ -165,31 +165,16 @@
             {% else %}
                 <section class="container">
                     {% for task in tasks %}
-                        {% for acr_task, children_tasks in task.items %}
-                            <div class="ac">
-                                <input class="ac-input" id="ac-{{ acr_task.id }}" name="ac-{{ acr_task.id }}"
-                                       type="checkbox"/>
-                                <label class="ac-label" for="ac-{{ acr_task.id }}">
-                                    {{ acr_task.task_name|map_task_name }}
-                                </label>
-                                <article class="ac-text">
-                                    <div class="results ml-1">{{ acr_task.result }}</div>
-                                    {% for children_task in children_tasks %}
-                                        <div class="ac-sub">
-                                            <input class="ac-input" id="ac-{{ children_task.id }}"
-                                                   name="ac-{{ children_task.id }}" type="checkbox"/>
-                                            <label class="ac-label"
-                                                   for="ac-{{ children_task.id }}">{{ children_task.task_name|map_task_name }}</label>
-                                            <article class="ac-sub-text">
-                                                <div class="results">
-                                                    {{ children_task.result }}
-                                                </div>
-                                            </article>
-                                        </div>
-                                    {% endfor %}
-                                </article>
-                            </div>
-                        {% endfor %}
+                        <div class="ac">
+                            <input class="ac-input" id="ac-{{ task.id }}" name="ac-{{ task.id }}"
+                                   type="checkbox"/>
+                            <label class="ac-label" for="ac-{{ task.id }}">
+                                {{ task.task_name|map_task_name }}
+                            </label>
+                            <article class="ac-text">
+                                <div class="results ml-1">{{ task.result }}</div>
+                            </article>
+                        </div>
                     {% endfor %}
                 </section>
             {% endif %}

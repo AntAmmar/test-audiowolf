@@ -47,7 +47,7 @@ class ChartmetricTask(BaseTask):
         headers = {
             'Authorization': 'Bearer {token}'.format(token=access_token)
         }
-        self.read_responses(advert_id, spotify_artist_url, headers)
+        return self.read_responses(advert_id, spotify_artist_url, headers)
 
 
 ChartmetricTask = app.register_task(ChartmetricTask())
