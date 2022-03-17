@@ -56,20 +56,7 @@ class AdvertDetails(DetailView):
         context['name'] = self.get_object().video.name.split('/')[-1]
         context['advert_url'] = self.get_object().advert_url.replace('view?usp=sharing', 'preview')
         advert_tasks = self.get_object().adverttask_set.all()
-        # task_names = ['send_wav_to_acr_cloud', 'spotify_get_tracks', 'musiio', 'chartmetric_task']
         context_tasks = []
-        # for advert_task in advert_tasks:
-        #     task = TaskResult.objects.get(task_id=advert_task.task_id)
-        #     if task.task_name in task_names and task.status == 'SUCCESS':
-        #         tasks_map = {}
-        #         children = json.loads(task.meta).get('children')
-        #         flat_list = flatten(children)
-        #         subtasks = [TaskResult.objects.filter(task_id=task_id, status='SUCCESS') for task_id in flat_list]
-        #         tasks_map[task] = list(filter(lambda v: v.exists(), subtasks))
-        #         # print(children)
-        #         tasks.append(task)
-        #         print(tasks_map)
-        # context['tasks'] = tasks
         advert_task_ids = [advert_task.task_id for advert_task in advert_tasks]
         tasks = TaskResult.objects.filter(task_id__in=advert_task_ids)
         for task in tasks:
@@ -80,6 +67,5 @@ class AdvertDetails(DetailView):
                 subtasks = [TaskResult.objects.filter(task_id=task_id, status='SUCCESS') for task_id in flat_list]
                 tasks_map[task] = list(filter(lambda v: v.exists(), subtasks))[0]
                 context_tasks.append(tasks_map)
-        print(context_tasks)
         context['tasks'] = context_tasks
         return context
