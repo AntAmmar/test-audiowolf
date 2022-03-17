@@ -80,18 +80,18 @@ WSGI_APPLICATION = 'audiowolf.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'audiowolf',
-        'USER': 'audiowolf',
-        'PASSWORD': 'audiowolf',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'audiowolf',
+    #     'USER': 'audiowolf',
+    #     'PASSWORD': 'audiowolf',
+    #     'HOST': 'localhost',
+    #     'PORT': 5432,
+    # }
 }
 
 
@@ -131,8 +131,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-# STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "staticfiles",
+]
 
 # MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -153,7 +157,7 @@ AWS_S3_SECRET_ACCESS_KEY = 'eMT1yLieByBDJOEbTyjukmDJT0koyv1c72VrqiFA'
 AWS_S3_ENDPOINT_URL = 'https://ewr1.vultrobjects.com'
 AWS_STORAGE_BUCKET_NAME = 'audio-wolf'
 
-STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{STATIC_ROOT}/'
+# STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{STATIC_ROOT}/'
 MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{MEDIA_ROOT}/'
 
 CACHES = {

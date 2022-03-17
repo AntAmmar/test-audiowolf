@@ -1,0 +1,200 @@
+{% load static %}
+{% load task_names %}
+<html lang="eng">
+<head>
+    <title>Advert: {{ object.video.name }}</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .wrapper {
+            max-width: 1024px;
+            margin: 0 auto;
+            font: 1.2em Helvetica, arial, sans-serif;
+        }
+
+        .wrapper > * {
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .wrapper {
+            display: grid;
+            grid-template-columns: repeat(12, [col-start] 1fr);
+            gap: 20px;
+        }
+
+        .wrapper > * {
+            grid-column: col-start / span 12;
+        }
+
+        @media (min-width: 700px) {
+            .content {
+                grid-column: col-start 1 / span 8;
+                grid-row: 2 / 4;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+        }
+
+        .wrapper {
+            display: grid;
+            grid-template-columns: repeat(12, [col-start] 1fr);
+            gap: 20px;
+        }
+
+        .ac-label {
+            font-weight: 700;
+            position: relative;
+            padding: .5em 1em;
+            margin-bottom: .5em;
+            display: block;
+            cursor: pointer;
+            background-color: whiteSmoke;
+            transition: background-color .15s ease-in-out;
+        }
+
+        .ac-input:checked + label, .ac-label:hover {
+            background-color: #999;
+        }
+
+        .ac-label:after, .ac-input:checked + .ac-label:after {
+            content: "+";
+            position: absolute;
+            display: block;
+            right: 0;
+            top: 0;
+            width: 2em;
+            height: 100%;
+            line-height: 2.25em;
+            text-align: center;
+            background-color: #e5e5e5;
+            transition: background-color .15s ease-in-out;
+        }
+
+        .ac-label:hover:after, .ac-input:checked + .ac-label:after {
+            background-color: #b5b5b5;
+        }
+
+        .ac-input:checked + .ac-label:after {
+            content: "-";
+        }
+
+        .ac-input {
+            display: none;
+        }
+
+        .ac-text, .ac-sub-text {
+            opacity: 0;
+            height: 0;
+            margin-bottom: .5em;
+            transition: opacity .5s ease-in-out;
+            overflow: hidden;
+        }
+
+        .ac-input:checked ~ .ac-text, .ac-sub .ac-input:checked ~ .ac-sub-text {
+            opacity: 1;
+            height: auto;
+        }
+
+        .ac-sub .ac-label {
+            background-color: whiteSmoke;
+            font-weight: 600;
+            padding: .5em 2em .5em 2.5em;
+            margin-bottom: 0;
+            margin-top: 10px;
+            margin-left: 30px;
+        }
+
+        .ac-sub .ac-label:checked {
+            border-bottom: 1px solid whitesmoke;
+        }
+
+        .ac-sub .ac-label:after, .ac-sub .ac-input:checked + .ac-label:after {
+            left: 0;
+            background-color: #e5e5e5;
+        }
+
+        .ac-sub .ac-input:checked + label, .ac-sub .ac-label:hover {
+            background: none;
+        }
+
+        .ac-sub-text {
+            padding: 0 1em 0 2em;
+        }
+        .ml-1 {
+            margin-left: 10px;
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="{% static "css/beautify-json.css" %}">
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="{% static "js/jquery.beautify-json.js" %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.results').beautifyJSON({
+                type: "strict",
+                hoverable: true,
+                collapsible: true,
+                color: true
+            });
+        });
+
+    </script>
+</head>
+<body style="box-sizing: border-box; background: #f9fafb">
+<div style="width: 1000px; margin: auto;">
+    <div class="wrapper">
+        <a href="{% url 'brand-adverts' object.brand.pk %}" style="padding-top: 20px; height: 20px">Back</a>
+        <header class="main-head">Video name: {{ name }}</header>
+        <article class="content">
+            <iframe src="{{ advert_url }}" width="640" height="480" allow="autoplay"></iframe>
+        </article>
+        <article>
+            {% if not tasks %}
+                <p>Music / commercial music not recognized by ACRCloud!</p>
+            {% else %}
+                <section class="container">
+                    {% for task in tasks %}
+                        {% for acr_task, children_tasks in task.items %}
+                            <div class="ac">
+                                <input class="ac-input" id="ac-{{ acr_task.id }}" name="ac-{{ acr_task.id }}"
+                                       type="checkbox"/>
+                                <label class="ac-label" for="ac-{{ acr_task.id }}">
+                                    {{ acr_task.task_name|map_task_name }}
+                                </label>
+                                <article class="ac-text">
+                                    <div class="results ml-1">{{ acr_task.result }}</div>
+                                    {% for children_task in children_tasks %}
+                                        <div class="ac-sub">
+                                            <input class="ac-input" id="ac-{{ children_task.id }}"
+                                                   name="ac-{{ children_task.id }}" type="checkbox"/>
+                                            <label class="ac-label"
+                                                   for="ac-{{ children_task.id }}">{{ children_task.task_name|map_task_name }}</label>
+                                            <article class="ac-sub-text">
+                                                <div class="results">
+                                                    {{ children_task.result }}
+                                                </div>
+                                            </article>
+                                        </div>
+                                    {% endfor %}
+                                </article>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </section>
+            {% endif %}
+        </article>
+    </div>
+</div>
+</body>
+</html>

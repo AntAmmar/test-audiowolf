@@ -11,6 +11,7 @@ class Brand(models.Model):
 class AdvertVideo(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, blank=False, null=False)
     video = models.FileField(upload_to='video/', blank=True, null=True)
+    advert_url = models.URLField(blank=True, null=True)
 
     class Meta:
         db_table = 'advert_video'

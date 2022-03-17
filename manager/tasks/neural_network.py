@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-import librosa
+# import librosa
 import numpy
 from adverts.models import AdvertVideoStatus, Status
 
@@ -58,8 +58,7 @@ class NeuralNetworkTask(BaseTask):
                         started = True
                 if len(ranges) > 0:
                     return ranges
-                else:
-                    return None
+        return None
 
     def execute(self, *args, **kwargs):
         """Example of using panns_inferece for audio tagging and sound event detection.
@@ -68,22 +67,18 @@ class NeuralNetworkTask(BaseTask):
         AdvertVideoStatus.objects.get(advert_id=advert_id).update_neural_network_status(Status.IN_PROGRESS)
         device = 'cpu'  # 'cuda' | 'cpu'
         audio_path = kwargs.get('path')
-        (audio, _) = librosa.core.load(audio_path, sr=32000, mono=True)
+        # (audio, _) = librosa.core.load(audio_path, sr=32000, mono=True)
+        (audio, _) = 'a'
         audio = audio[None, :]  # (batch_size, segment_samples)
 
-        print('------ Audio tagging ------')
         at = AudioTagging(checkpoint_path=None, device=device)
         (clipwise_output, embedding) = at.inference(audio)
-        """clipwise_output: (batch_size, classes_num), embedding: (batch_size, embedding_size)"""
 
         for i in range(len(clipwise_output)):
             self.print_audio_tagging_result(clipwise_output[i], i)
-        print(embedding, 'e')
-        print(len(clipwise_output), 'coutputlen')
-        print('------ Sound event detection ------')
+
         sed = SoundEventDetection(checkpoint_path=None, device=device)
         framewise_output = sed.inference(audio)
-        """(batch_size, time_steps, classes_num)"""
         ranges: Optional[List[List[int]]] = self.plot_sound_event_detection_result(framewise_output[0])
         kwargs['split_ranges'] = ranges
         AdvertVideoStatus.objects.get(advert_id=advert_id).update_neural_network_status(Status.SUCCESS)

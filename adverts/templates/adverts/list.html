@@ -20,7 +20,7 @@
 </head>
 <body style="box-sizing: border-box; background: #f9fafb">
 <div style="width: 1000px; margin: auto;">
-    <h1>{{ brand.name }}'s adverts in pipeline</h1>
+    <h1>Adverts in pipeline</h1>
     <form method="post" action="{% url 'brand-adverts' brand.id %}" enctype="multipart/form-data">
 					{% csrf_token %}
         <input type="hidden" name="brand" value="{{ brand.id }}">
@@ -36,22 +36,22 @@
                 <th style="border: 1px solid #fff;padding: .5em 1em; background: #db2777; color: #fff">
                     Video name
                 </th>
-                <th style="border: 1px solid #fff;padding: .5em 1em; background: #db2777; color: #fff">
-                    Status
-                </th>
+{#                <th style="border: 1px solid #fff;padding: .5em 1em; background: #db2777; color: #fff">#}
+{#                    Status#}
+{#                </th>#}
             </tr>
             </thead>
             <tbody>
             {% for advert in brand.advertvideo_set.all %}
                 <tr>
                     <td data-title='Video name' style="border: 1px solid #B3BFAA; padding: .5em 1em;">
-                        <a href="{% url 'advert-pipeline' advert.id %}">
+                        <a href="{% url 'advert-details' advert.id %}">
                             {{ advert.video }}
                         </a>
                     </td>
-                    <td data-title='Status' style="border: 1px solid #B3BFAA; padding: .5em 1em;">
-                        {{ advert.get_last_step }}
-                    </td>
+{#                    <td data-title='Status' style="border: 1px solid #B3BFAA; padding: .5em 1em;">#}
+{#                        {{ advert.get_last_step }}#}
+{#                    </td>#}
                 </tr>
             {% endfor %}
             </tbody>
