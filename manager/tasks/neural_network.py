@@ -48,13 +48,13 @@ class NeuralNetworkTask(BaseTask):
                 new_range = []
                 for i in range(len(framewise_output[:, idx])):
                     if started and framewise_output[:, idx][i] < 0.3:
-                        new_range.append(framewise_output[:, idx][i])
+                        new_range.append(i)
                         started = False
                         if new_range[1] - new_range[0] >= 500:
                             ranges.append(new_range)
                         new_range = []
                     if framewise_output[:, idx][i] >= 0.3 and not started:
-                        new_range.append(framewise_output[:, idx][i])
+                        new_range.append(i)
                         started = True
                 if len(ranges) > 0:
                     return ranges
