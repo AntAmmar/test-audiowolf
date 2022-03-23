@@ -65,11 +65,20 @@ class DownloadVideos:
         #                 advert = AdvertVideo(brand=brand)
         #                 advert.video.save(video_filename, File(video_file))
 
-        # video_info = list(self.read_spreadsheet())
-        for video_filename in os.listdir(os.path.join(BASE_DIR, "media", "video")):
-            brand = Brand.objects.all()[0]
-            with open(os.path.join(BASE_DIR, "media", "video", video_filename),
-                      'rb') as video_file:
-                advert = AdvertVideo(brand=brand)
-                advert.video.save(video_filename, File(video_file))
-    
+        video_info = list(self.read_spreadsheet())
+        for video_filename in os.listdir(os.path.join(BASE_DIR, "media", "downloaded")):
+            print(video_filename)
+            for link, name, brand_name, advert_id in video_info:
+                if int(advert_id) == int(video_filename.split('.')[0]):
+                    brand, created = Brand.objects.get_or_create(name=brand_name)
+                    with open(os.path.join(BASE_DIR, "media", "downloaded", str(advert_id) + '.mp4'),
+                              'rb') as video_file:
+                        advert = AdvertVideo(brand=brand)
+                        advert.video.save(video_filename, File(video_file))
+
+        # for video_filename in os.listdir(os.path.join(BASE_DIR, "media", "video")):
+        #     brand = Brand.objects.all()[0]
+        #     with open(os.path.join(BASE_DIR, "media", "video", video_filename),
+        #               'rb') as video_file:
+        #         advert = AdvertVideo(brand=brand)
+        #         advert.video.save(video_filename, File(video_file))

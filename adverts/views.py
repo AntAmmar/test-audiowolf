@@ -57,14 +57,17 @@ class AdvertDetails(DetailView):
         endpoint_url = settings.AWS_S3_ENDPOINT_URL
         bucket = settings.AWS_STORAGE_BUCKET_NAME
 
-        boto3.client(
+        client = boto3.client(
             's3',
             endpoint_url=endpoint_url,
             aws_access_key_id=settings.AWS_S3_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_S3_SECRET_ACCESS_KEY
         )
-
-        return f'{settings.AWS_S3_ENDPOINT_URL}/{bucket}/{obj.video.name}'
+        return client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': bucket, 'Key': obj.video.name},
+            ExpiresIn=5,
+        )
 
     def get_context_data(self, **kwargs):
         context = super(AdvertDetails, self).get_context_data(**kwargs)
