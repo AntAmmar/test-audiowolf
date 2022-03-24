@@ -9,10 +9,12 @@ from rest_framework.serializers import ModelSerializer
 class AdvertListSerializer(ModelSerializer):
     brand_name = serializers.CharField(source='brand.name')
     advert_url = serializers.SerializerMethodField()
+    sector_name = serializers.CharField(source='sector.name')
+    product_name = serializers.CharField(source='product.name')
 
     class Meta:
         model = AdvertVideo
-        fields = ('brand_name', 'advert_url')
+        fields = ('brand_name', 'advert_url', 'name', 'sector_name', 'product_name', 'release_date', 'processing_date')
 
     def get_advert_url(self, obj):
         endpoint_url = settings.AWS_S3_ENDPOINT_URL
