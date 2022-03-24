@@ -179,3 +179,15 @@ MUSIIO_API_KEY = env.str('MUSIIO_API_KEY', default='')
 SPREADSHEET_FILE = env.str('SPREADSHEET_FILE', default='')
 
 YT2MATE_URL = env.str('YT2MATE_URL', default='')
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'djangorestframework_camel_case.parser.CamelCaseFormParser',
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    ),
+}
