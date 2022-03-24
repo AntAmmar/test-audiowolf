@@ -9,8 +9,8 @@ from rest_framework.serializers import ModelSerializer
 class AdvertListSerializer(ModelSerializer):
     brand_name = serializers.CharField(source='brand.name')
     advert_url = serializers.SerializerMethodField()
-    sector_name = serializers.CharField(source='sector.name')
-    product_name = serializers.CharField(source='product.name')
+    sector_name = serializers.CharField(source='sector.name', allow_blank=True)
+    product_name = serializers.CharField(source='product.name', allow_null=True)
 
     class Meta:
         model = AdvertVideo
