@@ -37,5 +37,10 @@ setup(
         'torch==1.11.0',
         'torchlibrosa==0.0.9',
         'numpy==1.21',
+
+        'djangorestframework==3.13.1',
+        'drf-yasg==1.20.0',
+        'djangorestframework-camel-case==1.3.0',
+        'django-environ==0.8.1',
     ],
 )

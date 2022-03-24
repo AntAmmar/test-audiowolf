@@ -9,12 +9,16 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import environ
 import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+env.read_env()
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_results',
     'django_celery_beat',
+    'rest_framework',
+    'drf_yasg',
     'storages',
     'manager',
     'adverts',
@@ -152,10 +158,10 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 
-AWS_S3_ACCESS_KEY_ID = 'RK1CFXWMFPNENPZ3C27C'
-AWS_S3_SECRET_ACCESS_KEY = 'eMT1yLieByBDJOEbTyjukmDJT0koyv1c72VrqiFA'
-AWS_S3_ENDPOINT_URL = 'https://ewr1.vultrobjects.com'
-AWS_STORAGE_BUCKET_NAME = 'audio-wolf'
+AWS_S3_ACCESS_KEY_ID = env.str('AWS_S3_ACCESS_KEY_ID', default='')
+AWS_S3_SECRET_ACCESS_KEY = env.str('AWS_S3_SECRET_ACCESS_KEY', default='')
+AWS_S3_ENDPOINT_URL = env.str('AWS_S3_ENDPOINT_URL', default='')
+AWS_STORAGE_BUCKET_NAME = env.str('AWS_STORAGE_BUCKET_NAME', default='')
 
 # STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{STATIC_ROOT}/'
 MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{MEDIA_ROOT}/'
@@ -167,9 +173,9 @@ CACHES = {
     }
 }
 
-AUDIO_SPLIT_DURATION = '10'
-MUSIIO_API_KEY = '62ce3511ffcd42a09a6fa866023920dccKGOJ-TSQQbGhAawCRxjgAZbIM_EyY'
+AUDIO_SPLIT_DURATION = env.str('AUDIO_SPLIT_DURATION', default='10')
+MUSIIO_API_KEY = env.str('MUSIIO_API_KEY', default='')
 
-SPREADSHEET_FILE = '/root/all-adverts.xlsx'
+SPREADSHEET_FILE = env.str('SPREADSHEET_FILE', default='')
 
-YT2MATE_URL = 'https://y2mate.is/en74/'
+YT2MATE_URL = env.str('YT2MATE_URL', default='')
