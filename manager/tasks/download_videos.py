@@ -7,7 +7,7 @@ from django.core.files import File
 
 from audiowolf.settings import BASE_DIR, SPREADSHEET_FILE
 
-from adverts.models import AdvertVideo, Brand
+from adverts.models import AdvertVideo, Brand, Sector, Product
 
 from pytube import YouTube
 
@@ -25,7 +25,7 @@ class DownloadVideos:
             name = row[6]
             brand = row[1]
             if official_yt_link:
-                yield official_yt_link, name, brand, row[0]
+                yield official_yt_link, name, brand, row[0], row[2], row[3], row[4]
                 continue
 
     def download(self, link):
@@ -68,12 +68,15 @@ class DownloadVideos:
         video_info = list(self.read_spreadsheet())
         for video_filename in os.listdir(os.path.join(BASE_DIR, "media", "downloaded")):
             print(video_filename)
-            for link, name, brand_name, advert_id in video_info:
+            for link, name, brand_name, advert_id, sector_name, product_name, release_date in video_info:
                 if int(advert_id) == int(video_filename.split('.')[0]):
-                    brand, created = Brand.objects.get_or_create(name=brand_name)
+                    brand, brand_created = Brand.objects.get_or_create(name=brand_name)
+                    sector, sector_created = Sector.objects.get_or_create(name=sector_name)
+                    product, product_created = Product.objects.get_or_create(name=product_name)
                     with open(os.path.join(BASE_DIR, "media", "downloaded", str(advert_id) + '.mp4'),
                               'rb') as video_file:
-                        advert = AdvertVideo(brand=brand)
+                        advert = AdvertVideo(brand=brand, sector=sector, product=product, release_date=release_date,
+                                             name=name)
                         advert.video.save(video_filename, File(video_file))
 
         # for video_filename in os.listdir(os.path.join(BASE_DIR, "media", "video")):

@@ -8,10 +8,29 @@ class Brand(models.Model):
         db_table = 'brand'
 
 
+class Sector(models.Model):
+    name = models.CharField(max_length=200, blank=False, null=False)
+
+    class Meta:
+        db_table = 'sector'
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=200, blank=False, null=False)
+
+    class Meta:
+        db_table = 'product'
+
+
 class AdvertVideo(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, blank=False, null=False)
     video = models.FileField(upload_to='video/', blank=True, null=True)
     advert_url = models.URLField(blank=True, null=True)
+    name = models.CharField(max_length=500, blank=True, null=True)
+    release_date = models.DateField(blank=True, null=True)
+    sector = models.ForeignKey(Sector, on_delete=models.CASCADE, blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
+    processing_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
 
     class Meta:
         db_table = 'advert_video'
