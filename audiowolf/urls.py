@@ -27,5 +27,5 @@ urlpatterns = [
     path('brands/<int:pk>/adverts/', BrandAdverts.as_view(), name='brand-adverts'),
     path('advert/pipeline/<int:pk>/', AdvertPipeline.as_view(), name='advert-pipeline'),
     path('advert/<int:pk>/', AdvertDetails.as_view(), name='advert-details'),
-    path('api', include(api_urls)),
+    path('api/', include(api_urls)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
