@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from adverts.views import BrandList, BrandAdverts, AdvertPipeline, AdvertDetails
 from django.contrib import admin
 from django.urls import path, include
+from api.urls import api_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +27,5 @@ urlpatterns = [
     path('brands/<int:pk>/adverts/', BrandAdverts.as_view(), name='brand-adverts'),
     path('advert/pipeline/<int:pk>/', AdvertPipeline.as_view(), name='advert-pipeline'),
     path('advert/<int:pk>/', AdvertDetails.as_view(), name='advert-details'),
-    path('api', include('api.urls')),
+    path('api', include(api_urls)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
