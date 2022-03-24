@@ -7,5 +7,5 @@ from api.advert.serializers import AdvertListSerializer
 
 
 class AdvertListView(ListModelMixin, GenericViewSet):
-    serializer = AdvertListSerializer
+    serializer_class = AdvertListSerializer
     queryset = AdvertVideo.objects.all()
