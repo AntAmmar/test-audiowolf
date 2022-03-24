@@ -75,6 +75,7 @@ class DownloadVideos:
                     product, product_created = Product.objects.get_or_create(name=product_name)
                     with open(os.path.join(BASE_DIR, "media", "downloaded", str(advert_id) + '.mp4'),
                               'rb') as video_file:
+                        release_date = release_date if release_date is not 'NA' else None
                         advert = AdvertVideo(brand=brand, sector=sector, product=product, release_date=release_date,
                                              name=name)
                         advert.video.save(video_filename, File(video_file))
