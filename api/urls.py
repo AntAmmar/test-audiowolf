@@ -16,7 +16,7 @@ schema_view = get_schema_view(
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
-    url="localhost:8000"
+    url="http://78.141.240.186:8080"
 )
 
 api_urls = [
